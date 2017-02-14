@@ -1,0 +1,25 @@
+<VirtualHost {% if item.ip_address is defined %}{vhost.ip_address}{% else %}*{% endif -%}:80>
+  ServerName {{ item.name }}
+  
+  DocumentRoot {{ item.document_root }}
+
+  ErrorLog "/var/log/httpd/{{ item.name }}-error.log"
+  CustomLog "/var/log/httpd/{{ item.name}}-access.log" combined
+</VirtualHost>
+
+{% if item.ssl.enabled == "True" %}
+<VirtualHost {{ item.ip_address}}:443>
+  ServerName {{item.name}}
+  DocumentRoot {{ item.document_root }}
+
+  SSLProtocol all -SSLv2
+  SSLCipherSuite HIGH:MEDIUM:!aNull:!MD5:!SEED:!IDEA
+  SSLCertificateKeyFile {{ item.ssl.key }}
+  SSLCertificateFile {{ item.ssl.certificate }}
+  {% if item.ssl.chain_certificate is defined %}
+  SSLCertificateChainFile {{ item.ssl.chain_certificate }}
+  {% endif -%}
+
+  CustomLog logs/{{item.name}}-ssl-error.log \
+    "%t %h %{SSL_PROTOCOL}x %{SSL_CIPER}x \"%r\" %b"
+{% endif -%}

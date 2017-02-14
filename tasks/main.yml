@@ -10,8 +10,23 @@
 - name: Install Apache HTTPd 
   package: state=latest name="{{ apache_httpd_package_name }}" 
 
-- name: Create VirtualHosts
-  debug: 
-   msg: "{{ virtual_host.name }}"
+- name: Ensure httpd is running and enabled
+  service: name=httpd state=started enabled=yes
+
+- name: Open up 443 and 80 in firewalld
+  firewalld: service=http permanent=true state=enabled
+  when:
+    (ansible_os_family == "RedHat") and
+    (ansible_distribution_major_version == "7")
+
+- name: Setup virtual hosts
+  notify: restart httpd
+  template: 
+    src=virtualhost.j2
+    dest=/etc/httpd/conf.d/{{item.name}}.conf
+    owner=root
+    group=root
   with_items:
-    {{ virtual_hosts }}
+    - "{{ virtual_hosts }}"
+
+ 
