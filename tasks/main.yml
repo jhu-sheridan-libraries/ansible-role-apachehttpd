@@ -9,3 +9,9 @@
 
 - name: Install Apache HTTPd 
   package: state=latest name="{{ apache_httpd_package_name }}" 
+
+- name: Create VirtualHosts
+  debug: 
+   msg: "{{ virtual_host.name }}"
+  with_items:
+    {{ virtual_hosts }}
