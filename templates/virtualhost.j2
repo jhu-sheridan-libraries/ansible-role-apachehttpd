@@ -1,7 +1,12 @@
 <VirtualHost {% if item.ip_address is defined %}{vhost.ip_address}{% else %}*{% endif -%}:80>
   ServerName {{ item.name }}
-  
+
   DocumentRoot {{ item.document_root }}
+ 
+  {% if item.admin_email is defined %}
+ServerAdmin {{ item.admin_email }}
+  {% endif %}
+
 
   ErrorLog "/var/log/httpd/{{ item.name }}-error.log"
   CustomLog "/var/log/httpd/{{ item.name}}-access.log" combined
