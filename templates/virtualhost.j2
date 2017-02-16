@@ -7,6 +7,10 @@
 ServerAdmin {{ item.admin_email }}
   {% endif %}
 
+  <Directorymatch "^/.*/\.git/">
+  Order deny,allow
+  Deny from all
+  </Directorymatch>
 
   ErrorLog "/var/log/httpd/{{ item.name }}-error.log"
   CustomLog "/var/log/httpd/{{ item.name}}-access.log" combined
@@ -16,6 +20,15 @@ ServerAdmin {{ item.admin_email }}
 <VirtualHost {{ item.ip_address}}:443>
   ServerName {{item.name}}
   DocumentRoot {{ item.document_root }}
+
+  {% if item.admin_email is defined %}
+ServerAdmin {{ item.admin_email }}
+  {% endif %}
+
+  <Directorymatch "^/.*/\.git/">
+  Order deny,allow
+  Deny from all
+  </Directorymatch>
 
   SSLProtocol all -SSLv2
   SSLCipherSuite HIGH:MEDIUM:!aNull:!MD5:!SEED:!IDEA
