@@ -12,12 +12,18 @@ ServerAdmin {{ item.admin_email }}
   Deny from all
   </Directorymatch>
 
+  <Directory {{ item.document_root }}/>
+    Require all granted
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride all
+  </Directory>
+
   ErrorLog "/var/log/httpd/{{ item.name }}-error.log"
   CustomLog "/var/log/httpd/{{ item.name}}-access.log" combined
 </VirtualHost>
 
-{% if item.ssl.enabled == "True" %}
-<VirtualHost {{ item.ip_address}}:443>
+{% if item.ssl.enabled == "True" | bool %}
+<VirtualHost {% if item.ip_address is defined %}{vhost.ip_address}{% else %}*{% endif -%}:443>
   ServerName {{item.name}}
   DocumentRoot {{ item.document_root }}
 
@@ -30,14 +36,24 @@ ServerAdmin {{ item.admin_email }}
   Deny from all
   </Directorymatch>
 
+  <Directory {{ item.document_root }}/>
+    Require all granted
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride all
+  </Directory>
+
+  SSLEngine on
+
   SSLProtocol all -SSLv2
   SSLCipherSuite HIGH:MEDIUM:!aNull:!MD5:!SEED:!IDEA
   SSLCertificateKeyFile {{ item.ssl.key }}
   SSLCertificateFile {{ item.ssl.certificate }}
   {% if item.ssl.chain_certificate is defined %}
-  SSLCertificateChainFile {{ item.ssl.chain_certificate }}
+SSLCertificateChainFile {{ item.ssl.chain_certificate }}
   {% endif -%}
 
-  CustomLog logs/{{item.name}}-ssl-error.log \
+  CustomLog logs/{{item.name}}-ssl.log \
     "%t %h %{SSL_PROTOCOL}x %{SSL_CIPER}x \"%r\" %b"
+</VirtualHost>
 {% endif -%}
+

@@ -10,11 +10,30 @@
 - name: Install Apache HTTPd 
   package: state=latest name="{{ apache_httpd_package_name }}" 
 
+- name: Install mod_ssl
+  package: state=latest name=mod_ssl
+
+- name: Ensure ssl.conf is correct
+  copy:
+    src: files/ssl.conf
+    dest: /etc/httpd/conf.d/ssl.conf
+    owner: root
+    group: root
+    mode: 0644
+
 - name: Ensure httpd is running and enabled
   service: name=httpd state=started enabled=yes
 
-- name: Open up 443 and 80 in firewalld
+- name: Open up 80 in firewalld
+  notify: restart firewalld
   firewalld: service=http permanent=true state=enabled
+  when:
+    (ansible_os_family == "RedHat") and
+    (ansible_distribution_major_version == "7")
+
+- name: Open up 443 in firewalld
+  notify: restart firewalld
+  firewalld: service=https permanent=true state=enabled
   when:
     (ansible_os_family == "RedHat") and
     (ansible_distribution_major_version == "7")
