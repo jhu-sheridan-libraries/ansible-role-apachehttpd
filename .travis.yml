@@ -15,4 +15,4 @@ install:
 
 script:
    # We'll add some commands to test the role here.
-
+  - ansible-playbook -i tests/inventory tests/test.yml --syntax-check
