@@ -1,8 +1,10 @@
 ---
-ssl_certificates:[]
-# ssl_certificates: 
-#   - host.domain.tld
-virtual_hosts: []
+ssl_certificates: []
+  # Additional Properties:
+  # - host.domain.tld
+  
+virtual_hosts: "{{ apache_virtual_hosts }}"
+apache_virtual_hosts: []
 
 # virtual_hosts:
 #   - {
