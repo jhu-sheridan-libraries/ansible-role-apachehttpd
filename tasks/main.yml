@@ -7,22 +7,22 @@
    - "../vars/default.yml"
   when: apache_package_name is not defined or apache_service_name is not defined
 
-- name: Install Apache HTTPd 
-  package: state=latest name="{{ apache_httpd_package_name }}" 
+- name: Install Apache HTTPd
+  package: state=latest name="{{ apache_httpd_package_name }}"
 
 - name: Install mod_ssl
-  package: state=latest name=mod_ssl
+  package: state=latest name={{ mod_ssl_package_name }}
 
 - name: Install firewalld for EL 7
   package: state=latest name=firewalld
   when:
-    - ansible_distribution_major_version == "7" 
+    - ansible_distribution_major_version == "7"
     - ansible_os_family == "RedHat"
-      
+
 - name: Ensure firewalld is enabled and running for EL 7
   service: name=firewalld state=started enabled=yes
   when:
-    - ansible_distribution_major_version == "7" 
+    - ansible_distribution_major_version == "7"
     - ansible_os_family == "RedHat"
 
 - name: Ensure ssl.conf is correct
@@ -52,12 +52,10 @@
 
 - name: Setup virtual hosts
   notify: restart httpd
-  template: 
+  template:
     src=virtualhost.j2
-    dest=/etc/httpd/conf.d/{{item.name}}.conf
+    dest=/etc/httpd/conf.d/{{item.servername}}.conf
     owner=root
     group=root
   with_items:
-    - "{{ virtual_hosts }}"
-
- 
+    - "{{ apache_virtual_hosts }}"
