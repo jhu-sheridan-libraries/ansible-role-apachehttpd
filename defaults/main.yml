@@ -2,36 +2,60 @@
 ssl_certificates: []
   # Additional Properties:
   # - host.domain.tld
-  
-virtual_hosts: "{{ apache_virtual_hosts }}"
-apache_virtual_hosts: []
 
-# virtual_hosts:
-#   - {
-#       name: "host.domain.tld",
-#       admin_email: "user@domain.tld",
-#       document_root: "/var/www/html",
-#       ssl: {
-#         enabled: True,
-#         certificate: /etc/pki/tls/certs/host.domain.tld.crt,
-#         key: /etc/pki/tls/key/host.domain.tld.key,
-#         chain_certificate: /etc/pki/tls/certs/host.domain.tld.interm.crt
-#       }
-#     }
-#
-# example of ssl certficate:
-# ssl_certs:
-#   host.domain.tld:
-#     cert: |
-#       -----BEGIN CERTIFICATE-----
-#       sdfadsfasdfasdfasdf
-#       -----END CERTIFICATE-----
-#     interim: |
-#       -----BEGIN CERTIFICATE-----
-#       ds;fkljkasldfj;lkasjdfljasd;fjasdf
-#       -----END CERTIFICATE-----
-#     key: |
-#       -----BEGIN RSA PRIVATE KEY-----
-#       MIIEow...
-#       -----END RSA PRIVATE KEY-----
-#
+virtual_hosts: [] # this is deprecated and will go away
+
+# Collection of virtual hosts
+apache_virtual_hosts:
+  - servername: demo.local.dev
+    serveradmin: root@localhost
+    documentroot: /var/www/html
+    errorlog: /var/log/httpd/error_log
+    customlog: "\"/var/log/access_log\" combined"
+    errordocument:
+      - "404 default"
+    ssl: {
+      enabled: false
+      }
+    directory:
+      - directory_path: /
+        require: all granted
+        errordocument:
+          - "404 default"
+  # Possible arguments are:
+  # ipaddress: 192.168.1.100
+  # servername: site.domain.tld
+  # serveralias:
+  #   - alias: sitealias.domain.tld
+  # serveradmin: admin@domain.tld
+  # documentroot: /var/www/html
+  #
+  # directory:
+  #   - directory-path: /
+  #     allowoverride: None,
+  #     authname: "Secret area",
+  #     authtype: basic,
+  #     defaulttype: text/plain,
+  #     require: all granted
+  #     errordocument:
+  #       - "404 default"
+  #
+  # allowencodedslashes: Off
+  # errorlog: /var/log/httpd/error_log
+  # customlog: "logs/access_log" combined
+  # ssl:
+  #   enable: true,
+  #   certificate: /etc/pki/tls/certs/site.domain.tld.crt,
+  #   key: /etc/pki/tls/private/site.domain.tld.key,
+  #   certificate_chain: /etc/pki/tls/certs/site.domain.tld_interm.crt
+
+
+# if you require a specific version of Apache HTTPd, set it here.
+apache_httpd_version: latest
+
+apache_httpd_document_root: /var/www/html
+apache_httpd_default_ipaddress: "*"
+apache_httpd_error_log: /var/log/httpd/error_log
+apache_httpd_custom_log: \"/var/log/httpd/access_log\" combined
+apache_httpd_allowoverride: None
+apache_httpd_defaulttype: text/plain

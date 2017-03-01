@@ -1,1 +1,2 @@
 apache_httpd_package_name: httpd
+mod_ssl_package_name: mod_ssl

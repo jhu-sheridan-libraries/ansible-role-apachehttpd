@@ -1,59 +1,40 @@
-<VirtualHost {% if item.ip_address is defined %}{vhost.ip_address}{% else %}*{% endif -%}:80>
-  ServerName {{ item.name }}
+#jinja2: lstrip_blocks: "True", trim_blocks: "True"
+<VirtualHost {{ item.ipaddress | default(apache_httpd_default_ipaddress)}}:80>
+  ServerName {{ item.servername }}
 
-  DocumentRoot {{ item.document_root }}
- 
-  {% if item.admin_email is defined %}
-ServerAdmin {{ item.admin_email }}
+  DocumentRoot {{ item.documentroot | default(apache_httpd_document_root) }}
+
+  {% if item.serveradmin is defined %}
+  ServerAdmin {{ item.serveradmin }}
+  {% endif %}
+
+  {% if item.errordocument is defined %}
+  {% for errordoc in item.errordocument %}
+  ErrorDocument {{ errordoc }}
+  {% endfor %}
   {% endif %}
 
   <Directorymatch "^/.*/\.git/">
-  Order deny,allow
-  Deny from all
+    Require all denied
   </Directorymatch>
 
-  <Directory {{ item.document_root }}/>
-    Require all granted
-    Options Indexes FollowSymLinks MultiViews
-    AllowOverride all
+  {% if item.directory is defined %}
+  {% for directory in item.directory %}
+  <Directory {{ directory.directory_path}} >
+    {% if directory.require is defined %}
+    Require {{ directory.require}}
+    {% endif %}
+    AllowOverride {{ directory.allowoverride | default(apache_httpd_allowoverride)}}
+    DefaultType {{ directory.defaulttype | default(apache_httpd_defaulttype)}}
+    {% if directory.errordocument is defined %}
+    {% for errordoc in directory.errordocument %}
+    ErrorDocument {{ errordoc }}
+    {% endfor %}
+    {% endif %}
   </Directory>
-
-  ErrorLog "/var/log/httpd/{{ item.name }}-error.log"
-  CustomLog "/var/log/httpd/{{ item.name}}-access.log" combined
-</VirtualHost>
-
-{% if item.ssl.enabled == "True" | bool %}
-<VirtualHost {% if item.ip_address is defined %}{vhost.ip_address}{% else %}*{% endif -%}:443>
-  ServerName {{item.name}}
-  DocumentRoot {{ item.document_root }}
-
-  {% if item.admin_email is defined %}
-ServerAdmin {{ item.admin_email }}
+  {% endfor %}
   {% endif %}
 
-  <Directorymatch "^/.*/\.git/">
-  Order deny,allow
-  Deny from all
-  </Directorymatch>
-
-  <Directory {{ item.document_root }}/>
-    Require all granted
-    Options Indexes FollowSymLinks MultiViews
-    AllowOverride all
-  </Directory>
-
-  SSLEngine on
-
-  SSLProtocol all -SSLv2
-  SSLCipherSuite HIGH:MEDIUM:!aNull:!MD5:!SEED:!IDEA
-  SSLCertificateKeyFile {{ item.ssl.key }}
-  SSLCertificateFile {{ item.ssl.certificate }}
-  {% if item.ssl.chain_certificate is defined %}
-SSLCertificateChainFile {{ item.ssl.chain_certificate }}
-  {% endif -%}
-
-  CustomLog logs/{{item.name}}-ssl.log \
-    "%t %h %{SSL_PROTOCOL}x %{SSL_CIPER}x \"%r\" %b"
+  ErrorLog {{ item.errorlog | default(apache_httpd_error_log)}}
+  CustomLog {{ item.customlog | default(apache_httpd_custom_log)}}
 </VirtualHost>
-{% endif -%}
-
