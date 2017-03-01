@@ -1,0 +1,37 @@
+---
+ssl_certificates: []
+  # Additional Properties:
+  # - host.domain.tld
+  
+virtual_hosts: "{{ apache_virtual_hosts }}"
+apache_virtual_hosts: []
+
+# virtual_hosts:
+#   - {
+#       name: "host.domain.tld",
+#       admin_email: "user@domain.tld",
+#       document_root: "/var/www/html",
+#       ssl: {
+#         enabled: True,
+#         certificate: /etc/pki/tls/certs/host.domain.tld.crt,
+#         key: /etc/pki/tls/key/host.domain.tld.key,
+#         chain_certificate: /etc/pki/tls/certs/host.domain.tld.interm.crt
+#       }
+#     }
+#
+# example of ssl certficate:
+# ssl_certs:
+#   host.domain.tld:
+#     cert: |
+#       -----BEGIN CERTIFICATE-----
+#       sdfadsfasdfasdfasdf
+#       -----END CERTIFICATE-----
+#     interim: |
+#       -----BEGIN CERTIFICATE-----
+#       ds;fkljkasldfj;lkasjdfljasd;fjasdf
+#       -----END CERTIFICATE-----
+#     key: |
+#       -----BEGIN RSA PRIVATE KEY-----
+#       MIIEow...
+#       -----END RSA PRIVATE KEY-----
+#
