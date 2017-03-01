@@ -1,6 +1,16 @@
 ---
 - hosts: all
 
+  vars: 
+    virtual_hosts:
+      - {
+          name: "localhost"
+          document_root: "/var/www/html"
+          ssl: {
+            enabled: False
+          }
+       }
+    ssl_certificates: [] 
   roles:
     - role_under_test
 
