@@ -38,3 +38,56 @@
   ErrorLog {{ item.errorlog | default(apache_httpd_error_log)}}
   CustomLog {{ item.customlog | default(apache_httpd_custom_log)}}
 </VirtualHost>
+
+{% if (item.ssl is defined) and (item.ssl.enabled == True) %}
+<VirtualHost {{ item.ipaddress | default(apache_httpd_default_ipaddress)}}:{{ apache_httpd_default_ssl_port }}>
+  ServerName {{ item.servername }}
+
+  DocumentRoot {{ item.documentroot | default(apache_httpd_document_root) }}
+
+  {% if item.serveradmin is defined %}
+  ServerAdmin {{ item.serveradmin }}
+  {% endif %}
+
+  {% if item.errordocument is defined %}
+  {% for errordoc in item.errordocument %}
+  ErrorDocument {{ errordoc }}
+  {% endfor %}
+  {% endif %}
+
+  <Directorymatch "^/.*/\.git/">
+    Require all denied
+  </Directorymatch>
+
+  {% if item.directory is defined %}
+  {% for directory in item.directory %}
+  <Directory {{ directory.directory_path}} >
+    {% if directory.require is defined %}
+    Require {{ directory.require}}
+    {% endif %}
+    AllowOverride {{ directory.allowoverride | default(apache_httpd_allowoverride)}}
+    DefaultType {{ directory.defaulttype | default(apache_httpd_defaulttype)}}
+    {% if directory.errordocument is defined %}
+    {% for errordoc in directory.errordocument %}
+    ErrorDocument {{ errordoc }}
+    {% endfor %}
+    {% endif %}
+  </Directory>
+  {% endfor %}
+  {% endif %}
+
+  SSLEngine on
+
+  SSLProtocol all -SSLv2
+  SSLCipherSuite HIGH:MEDIUM:!aNull:!MD5:!SEED:!IDEA
+  SSLCertificateKeyFile {{ item.ssl.key }}
+  SSLCertificateFile {{ item.ssl.certificate }}
+  {% if item.ssl.chain_certificate is defined %}
+SSLCertificateChainFile {{ item.ssl.chain_certificate }}
+  {% endif -%}
+
+
+  ErrorLog {{ item.errorlog | default(apache_httpd_error_log) }}
+  CustomLog {{ item.customlog | default(apache_httpd_custom_ssl_log) }}
+</VirtualHost>
+{% endif %}
