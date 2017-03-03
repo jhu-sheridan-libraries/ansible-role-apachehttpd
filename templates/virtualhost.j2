@@ -88,6 +88,7 @@ SSLCertificateChainFile {{ item.ssl.chain_certificate }}
 
 
   ErrorLog {{ item.errorlog | default(apache_httpd_error_log) }}
-  CustomLog {{ item.customlog | default(apache_httpd_custom__ssl_log) }}
+  CustomLog {{ item.customlog | default(apache_httpd_custom_ssl_log) }}
+
 </VirtualHost>
 {% endif %}
