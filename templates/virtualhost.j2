@@ -1,5 +1,5 @@
 #jinja2: lstrip_blocks: "True", trim_blocks: "True"
-<VirtualHost {{ item.ipaddress | default(apache_httpd_default_ipaddress)}}:80>
+<VirtualHost {{ item.ipaddress | default(apache_httpd_default_ipaddress)}}:{{ apache_httpd_default_port}}>
   ServerName {{ item.servername }}
 
   DocumentRoot {{ item.documentroot | default(apache_httpd_document_root) }}
@@ -89,5 +89,6 @@ SSLCertificateChainFile {{ item.ssl.chain_certificate }}
 
   ErrorLog {{ item.errorlog | default(apache_httpd_error_log) }}
   CustomLog {{ item.customlog | default(apache_httpd_custom_ssl_log) }}
+
 </VirtualHost>
 {% endif %}
