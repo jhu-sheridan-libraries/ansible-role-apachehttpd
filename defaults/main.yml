@@ -24,7 +24,7 @@ apache_virtual_hosts:
           - "404 default"
     rewriteengine: true
     rewriterule:
-      - "(.*) guides.library.jhu.edu [301,L]"
+      - "(.*) http://testit [R=301,L]"
 
   # Possible arguments are:
   # ipaddress: 192.168.1.100
