@@ -58,8 +58,8 @@ apache_virtual_hosts:
 apache_httpd_document_root: /var/www/html
 apache_httpd_default_ipaddress: "*"
 apache_httpd_error_log: /var/log/httpd/error_log
-apache_httpd_custom_log: \"/var/log/httpd/access_log\" combined
-apache_httpd_custom_ssl_log: \"var/log/httpd/ssl_access_log \"%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x %r %b\"
+apache_httpd_custom_log: /var/log/httpd/access_log combined
+apache_httpd_custom_ssl_log: /var/log/httpd/ssl_access_log \"%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x %r %b\"
 apache_httpd_allowoverride: None
 apache_httpd_defaulttype: text/plain
 apache_httpd_default_ssl_port: 443

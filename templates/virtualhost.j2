@@ -14,11 +14,13 @@
   {% endfor %}
   {% endif %}
 
+  {% if item.rewriteengine is defined %}
   {% if item.rewriteengine == true %}
   RewriteEngine on
   {% for rewriterule in item.rewriterule %}
   RewriteRule {{ rewriterule }}
   {% endfor %}
+  {% endif %}
   {% endif %}
 
   <Directorymatch "^/.*/\.git/">
