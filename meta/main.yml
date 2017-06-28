@@ -4,6 +4,7 @@ dependencies: []
 galaxy_info:
   author: "Derek Belrose"
   company: "Johns Hopkins University"
+  description: Ansible role to install and manage Apache HTTPd
   license: "BSD"
   min_ansible_version: 2.2.1
   platforms:
